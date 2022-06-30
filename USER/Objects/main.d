@@ -28,6 +28,7 @@
 .\objects\main.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
 .\objects\main.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 .\objects\main.o: ..\STM32F10x_FWLib\inc\misc.h
+.\objects\main.o: ..\SYSTEM\delay\delay.h
 .\objects\main.o: ..\SYSTEM\sys\sys.h
 .\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\main.o: ..\SYSTEM\delay\delay.h
+.\objects\main.o: ..\LIB\LED.h

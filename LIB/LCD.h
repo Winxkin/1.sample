@@ -1,18 +1,18 @@
 #ifndef __LCD_H
 #define __LCD_H	
-#include "sys.h"
+#include "stm32f10x_gpio.h"
 #include "delay.h"
 #include "stdint.h"
-#define D0  PB0
-#define D1	PB1
-#define D2	PB2
-#define D3	PB3
-#define D4	PB4
-#define D5	PB5
-#define D6	PB6
-#define D7	PB7
-#define LCD_EN PA9
-#define LCD_RS PA7
+#define D0  GPIO_Pin_1
+#define D1	GPIO_Pin_2
+#define D2	GPIO_Pin_3
+#define D3	GPIO_Pin_4
+#define D4	GPIO_Pin_5
+#define D5	GPIO_Pin_6
+#define D6	GPIO_Pin_7
+#define D7	GPIO_Pin_8
+#define LCD_EN GPIO_Pin_9
+#define LCD_RS GPIO_Pin_10
 
 #define clear 		0x01
 #define display 	0x0C
@@ -33,27 +33,10 @@ typedef enum
 } _line;
 
 
+void LCD_displaystr (GPIO_TypeDef* GPIOx, uint8_t *str, _line line);
+void LCD_setfull_str (GPIO_TypeDef* GPIOx, uint8_t *str1, uint8_t *str2);
+void LCD_displaynum (GPIO_TypeDef* GPIOx, uint8_t _int,_line line);
 
-
-void LCD_sentString (uint8_t *str);
-void LCD_sentCHAR (uint8_t _char);
-void LCD_sentCMD (uint8_t cmd);
-void LCD_sentDATA (uint8_t Data);
-void LCD_init ();
-
-void LCD_start ();
-
-void LCD_display (uint8_t *str,_line line);
-void LCD_sentint (uint8_t _int);
-
-void LCD_displaystr (uint8_t *str,_line line);
-
-void LCD_setfull_str (uint8_t *str1, uint8_t *str2);
-
-void LCD_sentint (uint8_t _int);
-
-void LCD_displaynum (uint8_t _int,_line line);
-void LCD_setfull_num (uint8_t _int1, uint8_t _int2);
 
 
 #endif

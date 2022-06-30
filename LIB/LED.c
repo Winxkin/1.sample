@@ -1,6 +1,7 @@
 #include "LED.h"
 
-void LED_INIT(GPIO_TypeDef* GPIOx,u16 GPIO_Pin_x)
+
+void LED_INIT(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin_x)
 {  
 		GPIO_InitTypeDef  GPIO_InitStructure;
       
@@ -43,7 +44,7 @@ void LED_INIT(GPIO_TypeDef* GPIOx,u16 GPIO_Pin_x)
 } 
 
 
-void LED_ON(GPIO_TypeDef* GPIOx,u16 GPIO_Pin_x,mode_typedef mode){
+void LED_ON(GPIO_TypeDef* GPIOx,uint16_t GPIO_Pin_x,mode_typedef mode){
   if(mode == HIGH_positive)
 	{
 	  GPIO_SetBits(GPIOx, GPIO_Pin_x);
@@ -56,7 +57,7 @@ void LED_ON(GPIO_TypeDef* GPIOx,u16 GPIO_Pin_x,mode_typedef mode){
 }
 
 
-void LED_OFF(GPIO_TypeDef* GPIOx,u16 GPIO_Pin_x,mode_typedef mode)
+void LED_OFF(GPIO_TypeDef* GPIOx,uint16_t GPIO_Pin_x,mode_typedef mode)
 {
   if(mode == LOW_positive)
 	{
@@ -68,7 +69,7 @@ void LED_OFF(GPIO_TypeDef* GPIOx,u16 GPIO_Pin_x,mode_typedef mode)
 	}
 }
 
-void LED_TOGGLE(GPIO_TypeDef* GPIOx,u16 GPIO_Pin_x) 
+void LED_TOGGLE(GPIO_TypeDef* GPIOx,uint16_t GPIO_Pin_x) 
 {
   GPIO_SetBits(GPIOx, GPIO_Pin_x);
 	delay_ms(1000);

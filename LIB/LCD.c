@@ -1,20 +1,90 @@
 #include "LCD.h"
 
-void LCD_init ()
-{
-	pinMode(D0,OUTPUT);
-	pinMode(D1,OUTPUT);
-	pinMode(D2,OUTPUT);
-	pinMode(D3,OUTPUT);
-	pinMode(D4,OUTPUT);
-	pinMode(D5,OUTPUT);
-	pinMode(D6,OUTPUT);
-	pinMode(D7,OUTPUT);
-	pinMode(LCD_EN,OUTPUT);
-	pinMode(LCD_RS,OUTPUT);
+void LCD_init (GPIO_TypeDef* GPIOx )
+{ 
+	GPIO_InitTypeDef  GPIO_InitStructure;
+      
+	
+	if (GPIOx == GPIOA) {
+		// Enable clock for GPIOA
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+
+	} else if (GPIOx == GPIOB) {
+		// Enable clock for GPIOB
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+
+	} else if (GPIOx == GPIOC) {
+		// Enable clock for GPIOC
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+
+	}else if (GPIOx == GPIOD) {
+		// Enable clock for GPIOD
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+
+	}else if (GPIOx == GPIOE) {
+		// Enable clock for GPIOE
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
+
+	}else if (GPIOx == GPIOF) {
+		// Enable clock for GPIOF
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
+
+	}else if (GPIOx == GPIOG) {
+		// Enable clock for GPIOG
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG, ENABLE);
+
+	}
+	GPIO_InitStructure.GPIO_Mode =GPIO_Mode_Out_PP ;	 
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; 
+	
+	//set seg_pin
+	GPIO_InitStructure.GPIO_Pin = D0;			     
+  GPIO_Init(GPIOx, &GPIO_InitStructure);
+
+	GPIO_InitStructure.GPIO_Pin = D1;			     
+  GPIO_Init(GPIOx, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = D2;			     
+  GPIO_Init(GPIOx, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = D3;			     
+  GPIO_Init(GPIOx, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = D4;			     
+  GPIO_Init(GPIOx, &GPIO_InitStructure);
+
+	GPIO_InitStructure.GPIO_Pin = D5;			     
+  GPIO_Init(GPIOx, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = D6;			     
+  GPIO_Init(GPIOx, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = D7;			     
+  GPIO_Init(GPIOx, &GPIO_InitStructure);	
+  
+	
+	GPIO_InitStructure.GPIO_Pin = LCD_EN;			     
+  GPIO_Init(GPIOx, &GPIO_InitStructure);
+	
+	GPIO_InitStructure.GPIO_Pin = LCD_RS;			     
+  GPIO_Init(GPIOx, &GPIO_InitStructure);
+	
 }
 
-void LCD_sentDATA (uint8_t Data)
+void set_bit (GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin_x, uint8_t value)
+{
+	if (value == 1)
+	{
+		GPIO_SetBits(GPIOx, GPIO_Pin_x);
+	}
+	else
+	{
+	  GPIO_ResetBits (GPIOx,GPIO_Pin_x);
+	}
+
+}
+
+void LCD_sentDATA (GPIO_TypeDef* GPIOx, uint8_t Data)
 {
   uint8_t b[8];
 	if(Data & 1)  b[0]=1;
@@ -42,95 +112,95 @@ void LCD_sentDATA (uint8_t Data)
 	else b[7] =0;
 	
 	
-	digitalWrite( D0, b[0] );
-	digitalWrite( D1, b[1] );
-	digitalWrite( D2, b[2] );
-	digitalWrite( D3, b[3] );
-	digitalWrite( D4, b[4] );
-	digitalWrite( D5, b[5] );
-	digitalWrite( D6, b[6] );
-	digitalWrite( D7, b[7] );
+	set_bit (GPIOx, D0, b[0]);
+	set_bit (GPIOx, D1, b[1]);
+	set_bit (GPIOx, D2, b[2]);
+	set_bit (GPIOx, D3, b[3]);
+	set_bit (GPIOx, D4, b[4]);
+	set_bit (GPIOx, D5, b[5]);
+	set_bit (GPIOx, D6, b[6]);
+	set_bit (GPIOx, D7, b[7]);
 	
 	
 }
 
-void LCD_sentCMD (uint8_t cmd)
+void LCD_sentCMD (GPIO_TypeDef* GPIOx, uint8_t cmd)
 {
-	digitalWrite (LCD_RS,LOW);
-	LCD_sentDATA (cmd);
-	digitalWrite (LCD_EN,LOW);
-	digitalWrite (LCD_EN,HIGH);
+	GPIO_ResetBits (GPIOx,LCD_RS);
+	LCD_sentDATA (GPIOx ,cmd);
+	GPIO_ResetBits (GPIOx,LCD_EN);
+	GPIO_SetBits (GPIOx,LCD_EN);
 	delay_ms (1);
   
 }
 
-void LCD_sentCHAR (uint8_t _char)
+void LCD_sentCHAR (GPIO_TypeDef* GPIOx, uint8_t _char)
 {
-	digitalWrite (LCD_RS,HIGH);
-	LCD_sentDATA (_char);
-	digitalWrite (LCD_EN,LOW);
-	digitalWrite (LCD_EN,HIGH);
+	GPIO_SetBits (GPIOx,LCD_RS);
+	LCD_sentDATA (GPIOx, _char);
+	GPIO_ResetBits (GPIOx,LCD_EN);
+	GPIO_SetBits (GPIOx,LCD_EN);
 	delay_ms (1);
   
 }
 
 
-void LCD_sentString (uint8_t *str)
+void LCD_sentString (GPIO_TypeDef* GPIOx, uint8_t *str)
 {
 	int i;
 	for(i=0; *(str) != '\0';i++)
 	{
-	   LCD_sentCHAR (*(str)++);
+	   LCD_sentCHAR (GPIOx, *(str)++);
 	}
 	
 }
 
-void LCD_start ()
+void LCD_start (GPIO_TypeDef* GPIOx)
 {
-  LCD_sentCMD(clear);
-	LCD_sentCMD(dis_2line);
-	LCD_sentCMD(display);
+  LCD_sentCMD(GPIOx, clear);
+	LCD_sentCMD(GPIOx,dis_2line);  //note
+	LCD_sentCMD(GPIOx,display);
  
 }
 
 
-void LCD_displaystr (uint8_t *str,_line line)
-{
+void LCD_displaystr (GPIO_TypeDef* GPIOx, uint8_t *str, _line line)
+{ 
+	LCD_start(GPIOx);
   if(line == l1)
 	{
-	  LCD_sentCMD(line1);
-		LCD_sentString(str);
+	  LCD_sentCMD(GPIOx,line1);
+		LCD_sentString(GPIOx,str);
 	}
 	else if (line == l2)
 	{
-		LCD_sentCMD(line2);
-		LCD_sentString(str);
+		LCD_sentCMD(GPIOx,line2);
+		LCD_sentString(GPIOx,str);
 	}
 	else if (line == l3)
 	{
-		LCD_sentCMD(line3);
-		LCD_sentString(str);
+		LCD_sentCMD(GPIOx,line3);
+		LCD_sentString(GPIOx,str);
 	}	
 	else 
 	{
-		LCD_sentCMD(line4);
-		LCD_sentString(str);
+		LCD_sentCMD(GPIOx,line4);
+		LCD_sentString(GPIOx,str);
 	}		
 	
 
 }
 
 
-void LCD_setfull_str (uint8_t *str1, uint8_t *str2)
+void LCD_setfull_str (GPIO_TypeDef* GPIOx, uint8_t *str1, uint8_t *str2)
 {
-	 LCD_init();
-	 LCD_start();
-	 LCD_displaystr (str1,l1);
-	 LCD_displaystr (str2,l2);
+	 LCD_start(GPIOx);
+	 LCD_displaystr (GPIOx,str1,l1);
+	 LCD_displaystr (GPIOx,str2,l2);
 }
 
 
-void LCD_sentint (uint8_t _int)
+void LCD_sentint (GPIO_TypeDef* GPIOx, uint8_t _int)
 { 
 	 uint8_t hundred =0;
 		 uint8_t dozen = 0;
@@ -138,15 +208,15 @@ void LCD_sentint (uint8_t _int)
 	
 	 if(_int<10)
 	 {
-			LCD_sentCHAR(_int+0x30);
+			LCD_sentCHAR(GPIOx, _int+0x30);
 	 }
 	 else if (_int>=10 && _int<100)
 	 {
 	     dozen = _int/10;
 		   unit = _int%10;
 		  
-		  LCD_sentCHAR (dozen + 0x30);
-		  LCD_sentCHAR (unit + 0x30);
+		  LCD_sentCHAR (GPIOx, dozen + 0x30);
+		  LCD_sentCHAR (GPIOx, unit + 0x30);
 	 
 	 }
 	 else
@@ -155,32 +225,35 @@ void LCD_sentint (uint8_t _int)
 		 dozen = (_int/10)%10;
 		 unit = _int%10;
 	    
-		 LCD_sentCHAR (hundred + 0x30);
-		 LCD_sentCHAR (dozen + 0x30);
-		 LCD_sentCHAR (unit + 0x30);
+		 LCD_sentCHAR (GPIOx, hundred + 0x30);
+		 LCD_sentCHAR (GPIOx, dozen + 0x30);
+		 LCD_sentCHAR (GPIOx, unit + 0x30);
 	 }
 }
 
-void LCD_displaynum (uint8_t _int,_line line)
+void LCD_displaynum (GPIO_TypeDef* GPIOx, uint8_t _int,_line line)
 {
   if(line == l1)
 	{
-	  LCD_sentCMD(line1);
-		LCD_sentint ( _int);
+	  LCD_sentCMD(GPIOx, line1);
+		LCD_sentint (GPIOx, _int);
 	}
-	else
+	else if(line == l2)
 	{
-		LCD_sentCMD(line2);
-		LCD_sentint ( _int);
+		LCD_sentCMD(GPIOx, line2);
+		LCD_sentint (GPIOx, _int);
+	}
+	else if(line == l3)
+	{
+		LCD_sentCMD(GPIOx, line3);
+		LCD_sentint (GPIOx, _int);
+	}
+	else if(line == l4)
+	{
+		LCD_sentCMD(GPIOx, line4);
+		LCD_sentint (GPIOx, _int);
 	}
 
 }
 
-void LCD_setfull_num (uint8_t _int1, uint8_t _int2)
-{
-	 LCD_init();
-	 LCD_start();
-	 LCD_displaynum (_int1,l1);
-	 LCD_displaynum (_int2,l2);
-}
 

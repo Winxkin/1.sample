@@ -1,17 +1,12 @@
 #ifndef __DHT_H
 #define __DHT_H	
 #include "delay.h"
-#include "sys.h"
+#include "stm32f10x_gpio.h"
 #include "stdint.h"
-#define pin_onewire PA0
 
-void DHT_RST () ;
-uint8_t Readbit ();
-uint8_t Readbyte ();
-//uint8_t Readdata(uint8_t* temp, uint8_t* humi);
-uint8_t check_DHT11 ();
-uint8_t Readtemp();
-uint8_t Readhumi();
+uint8_t Read_temp_humi(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin_x, uint8_t* temp, uint8_t* humi);
+uint8_t Read_temp(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin_x);
+uint8_t Read_humi(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin_x);
 
 #endif
 
